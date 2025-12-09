@@ -7,6 +7,7 @@ var app = builder.Build();
 //use: Sử dụng thư viện
 app.UseHttpsRedirection(); //https 
 
+
 app.MapBlazorHub(); //middleware của blazor để làm file chạy đầu tiên
 app.MapFallbackToPage("/_Host"); //File chọn chạy đầu tiên
 
