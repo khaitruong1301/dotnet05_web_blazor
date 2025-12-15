@@ -1,0 +1,70 @@
+@page "/one-way"
+
+
+
+<h1>One-way Data Binding</h1>
+@Name
+
+<br>
+<button @onclick="DoiTen">Đổi tên</button>
+
+@*  hiển thị Product *@
+@* bs5-card *@
+<div class=" col-4 card text-start">
+    <img class="card-img-top" style="width: 350px; height: auto;" src="https://i.pravatar.cc" alt="Title" />
+    <div class="card-body">
+        <h4 class="card-title">@product.Name</h4>
+        <p class="card-text">@product.Price</p>
+    </div>
+
+    @* form *@
+    <div class="mb-3">
+        <label for="" class="form-label">Email</label>
+        @*  dùng @bind để thay đổi giá trị của Email, two-way binding *@
+        <input type="email" class="form-control" name="" id="" @bind="@Email" aria-describedby="emailHelpId"
+            placeholder="abc@mail.com" />
+        >
+    </div>
+    @Email
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <div>Tổng: @TinhTong(5, 10)</div>
+
+</div>
+
+
+
+@code {
+    // code c# ở đây
+    // Oneway binding : dữ liệu chỉ đi từ biến c# xuống giao diện C# -> UI
+
+    // c# -> UI , UI -> c# ( two-way binding) thủ công
+    public string Name = "Phương Tuấn";
+    public string Email = "phuongtuan97@gmail.com";
+
+    public class Product
+    {
+        public int Id { get; set; } = 1;
+        public string Name { get; set; } = "Iphone 17 Pro Max";
+        public decimal Price { get; set; } = 45000000;
+    }
+    // khởi tạo đối tượng product
+    public Product product = new Product();
+
+    int TinhTong(int a, int b)
+    {
+        return a + b;
+    }
+
+
+    void DoiTen()
+    {
+        Name = "Nguyễn Văn A";
+    }
+}

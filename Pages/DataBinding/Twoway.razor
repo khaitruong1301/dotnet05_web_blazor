@@ -1,0 +1,166 @@
+@*  bài tập nhỏ 
+    1 giao diện dạng bài post FB , Instagram 
+    số lượt like bài là 1 biến 
+    nhấn nút like thì số lượt like tăng lên +1
+ *@
+
+@page "/two-way"
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+
+<div class="container" style="margin-bottom:500px">
+
+    <h1>Two-way Data Binding</h1>
+    <div class="card  bg-light " style="width:25%">
+        <img class="card-img-top" style="width:100%" src="https://i.pravatar.cc?u=@luotLike" alt="Title" />
+        <div class="card-body">
+            <h4 class="card-title">Hôm nay ...</h4>
+            <button @onclick="() => TangGiamLike(1)">Like</button>
+            @luotLike
+            <button @onclick="() => TangGiamLike(-1)">Dislike</button>
+
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <div class="row">
+        <div class="col-6">
+            <h1>Form đăng ký</h1>
+
+            @* Model gán đối tượng @user để hộ binding những  *@
+            @* OnValidSubmit: khi form hợp lệ thì gọi hàm DangKy, hợp lệ khi pass dc hết các quy định trong các properti/thuộc tính của NguoiDung *@
+            @* OnInvalidSubmit : khi form không hợp lệ thì gọi hàm LOI *@
+            <EditForm Model="@user" OnValidSubmit="DangKy" OnInvalidSubmit="LOI">
+                @*  kích hoạt bắt lỗi theo DataAnnotations đã cấu hình trong NguoiDung *@
+                <DataAnnotationsValidator/>
+                @*  ValidationSummary: gom tất cả các lỗi hiển thị 1 chỗ *@
+                <ValidationSummary class="text-danger"/>
+                <p class="text-success">@message</p>
+                <div class="mb-3">
+                    <label for="" class="form-label">Name</label>
+                    <input type="text" class="form-control" @bind="@user.Name" aria-describedby="helpId"
+                        placeholder="" />
+                    @* hiển thị lỗi *@
+                    <ValidationMessage For="@(() => user.Name)" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Email</label>
+                    <input type="text" class="form-control" @bind="@user.Email" aria-describedby="helpId"
+                        placeholder="" />
+                    @* hiển thị lỗi *@
+                    <ValidationMessage For="@(() => user.Email)" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Password</label>
+                    <input type="text" class="form-control" @bind="@user.Password" aria-describedby="helpId"
+                        placeholder="" />
+                    @* hiển thị lỗi *@
+                    <ValidationMessage For="@(() => user.Password)" class="text-danger"></ValidationMessage>
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Gender</label>
+                    @* <select class="form-select" @bind="user.Gender" >
+                        <option value="true">Nam</option>
+                        <option value="false">Nữ</option>
+                    </select> *@
+                    <input type="radio" name="gender"  value="Nam" checked @onchange="(e) => DoiGioiTinh(e.Value.ToString())"/>
+                    <label for="">Nam</label>
+                    <input type="radio" name="gender" value="Nữ" @onchange="(e) => DoiGioiTinh(e.Value.ToString())"/>
+                    <label for="">Nữ</label>
+                    <input type="radio" name="gender" value="Khác" @onchange="(e) => DoiGioiTinh(e.Value.ToString())"/>
+                    <label for="">Khác</label>
+                </div>
+
+
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary me-2"
+                >
+                    Submit
+                </button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+                
+            </EditForm>
+
+        </div>
+        <div class="col-6">
+            <h1>Thông tin đăng ký</h1>
+            <p>Name: @user.Name</p>
+            <p>Email: @user.Email</p>
+            <p>Password: @user.Password</p>
+            @* <p>Gender: @(user.Gender ? "Nam" : "Nữ")</p> *@
+            <p>Gender:@user.Gender</p>
+            <p class="text-success">@message</p>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+@code {
+    public int luotLike = 10;
+
+    void TangLike()
+    {
+        luotLike++;
+    }
+    void GiamLike()
+    {
+        luotLike--;
+    }
+    void TangGiamLike(int soluong)
+    { // +1 tăng , -1 giảm
+        luotLike += soluong;
+    }
+
+
+    public class NguoiDung
+    {
+        //không được để trống
+        [Required(ErrorMessage = "Không được để trống")]
+        public string Name { get; set; } = "";
+
+        [Required(ErrorMessage = "Email không được để trống")]
+        [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Password không được để trống")]
+        [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
+        [MaxLength(20, ErrorMessage = "Mật khẩu không được vượt quá 20 ký tự")]
+        public string Password { get; set; } = "";
+
+
+        // thêm thông về giới tính true false true là nam, false là nữ
+        // không cần requried vì có giá trị mặc định
+        public string Gender { get; set;}
+    }
+
+    // tạo biến có kiểu NguoiDung, tạo instance NguoiDung
+    public NguoiDung user = new NguoiDung();
+
+
+
+    public string message = "";
+    void DangKy()
+    {
+        // xử lý đăng ký
+        message = $"Đăng ký thành công cho user {user.Name} - {user.Email}";
+    }
+    void LOI()
+    {
+        message = "Form không hợp lệ, vui lòng kiểm tra lại!";
+    }
+
+    void DoiGioiTinh(string gt){
+        // thay đổi giới tính
+        user.Gender = gt;
+    }
+
+}

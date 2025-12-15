@@ -11,6 +11,7 @@ app.UseHttpsRedirection(); //https
 app.MapBlazorHub(); //middleware của blazor để làm file chạy đầu tiên
 app.MapFallbackToPage("/_Host"); //File chọn chạy đầu tiên
 
+app.UseStaticFiles();
 
 app.Run(); // web được start
 
