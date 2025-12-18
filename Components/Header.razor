@@ -1,48 +1,43 @@
 @using System.Text.RegularExpressions
-<nav
-    class="navbar navbar-expand-sm navbar-dark bg-dark">
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Cybersoft</a>
-    <button
-        class="navbar-toggler d-lg-none"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapsibleNavId"
-        aria-controls="collapsibleNavId"
-        aria-expanded="false"
-        aria-label="Toggle navigation"></button>
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId"
+        aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation"></button>
     <div class="collapse navbar-collapse" id="collapsibleNavId">
         <ul class="navbar-nav me-auto mt-2 mt-lg-0">
             <li class="nav-item">
-                <NavLink class="nav-link active" ActiveClass="bg-white text-dark" href="/" aria-current="page" Match="NavLinkMatch.All">Home <span class="visually-hidden">(current)</span></NavLink>
+                <NavLink class="nav-link active" ActiveClass="bg-white text-dark" href="/" aria-current="page"
+                    Match="NavLinkMatch.All">Home <span class="visually-hidden">(current)</span></NavLink>
             </li>
             <li class="nav-item">
-                <NavLink class="nav-link" href="/register" ActiveClass="bg-white text-dark"  Match="NavLinkMatch.All">Register</NavLink>
+                <NavLink class="nav-link" href="/register" ActiveClass="bg-white text-dark" Match="NavLinkMatch.All">
+                    Register</NavLink>
             </li>
-             <li class="nav-item">
-                <NavLink class="nav-link" href="/login" ActiveClass="bg-white text-dark"  Match="NavLinkMatch.All">Login</NavLink>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/login" ActiveClass="bg-white text-dark" Match="NavLinkMatch.All">Login
+                </NavLink>
             </li>
 
             <li class="nav-item dropdown">
-                <a
-                    class="nav-link dropdown-toggle"
-                    href="#"
-                    id="dropdownId"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    >Data binding</a>
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Data binding</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownId">
                     <a class="dropdown-item" href="/one-way">Oneway</a>
                     <a class="dropdown-item" href="/two-way">two way</a>
                 </div>
             </li>
+        @* COMPONENT PARAM *@
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Component param</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    <a class="dropdown-item" href="/BaiTapRender">BaiTap render</a>
+                    <a class="dropdown-item" href="/demo-fragment">Demo Fragment</a>
+                </div>
+            </li>
         </ul>
         <form class="d-flex my-2 my-lg-0">
-            <input
-                class="form-control me-sm-2"
-                type="text"
-                placeholder="Search"
-            />
+            <input class="form-control me-sm-2" type="text" placeholder="Search" />
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
                 Search
             </button>

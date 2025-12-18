@@ -1,0 +1,20 @@
+@page "/demo-fragment"
+
+
+<div class="container">
+    <h1>Demo Fragment trong Blazor</h1>
+
+    @*  gọi 1 component dạng thẻ đóng mở html 
+            <DemoCom>
+                <h3>Tiêu đề bên trong fragment</h3>
+                <p>Mô tả bên trong fragment</p>
+            </DemoCom>
+         *@
+    <DemoCom>
+
+         <h3>Tiêu đề bên trong fragment</h3>
+        <p>Mô tả bên trong fragment</p>
+        <Header/>
+
+    </DemoCom>
+</div>

@@ -1,0 +1,59 @@
+@page "/BaiTapXe"
+@using web_blazor_server.Pages.ComponentParam
+
+@*  sẽ có giao diện 1 hình xe với màu mặc định là đen
+    4 button để đổi màu xe : black, red, silver, steel
+    Khi click vào button thì màu xe sẽ đổi theo màu button được click
+
+
+ có 1 biến lưu giá trị màu  xe , khi chọn màu thì đổi giá trị
+ -> render hình ảnh với màu tương ứng
+ *@
+
+<div class="container">
+
+    <img src="products/@mauXe-car.jpg" alt="" width="400">
+    @*  4 button  *@
+    @* <button  @onclick="()=>DoiMauXe()" class="btn btn-danger">Red</button>
+    <button  @onclick="()=>DoiMauXe()"  class="btn btn-dark">Black</button>
+    <button @onclick="()=>DoiMauXe()"  class="btn " style="background-color: gray;">Silver</button>
+    <button @onclick="()=>DoiMauXe()"  class="btn">Steel</button> *@
+
+    @foreach (string mau in dsMau)
+    {
+        <button @onclick="()=>DoiMauXe(mau)" style="background-color:@mau" class="btn">@mau</button>
+
+
+    }
+
+
+    <br><br><br><br><br><br><br><br>
+
+
+    <div class="row">
+        @foreach (var mau in dsMau)
+        {
+            <div class="col-3">
+                @* làm sao để từng caritem hiển thị đúng hình đúng màu *@
+                <CarItem MauXe="@mau" />
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+@code {
+
+    public List<string> dsMau = new List<string>() { "red", "black", "silver", "steel" };
+    public string mauXe = "black";
+
+    // hàm dổi giá trị của mauXe
+    void DoiMauXe(string mau)
+    {
+        mauXe = mau;
+
+    }
+
+}

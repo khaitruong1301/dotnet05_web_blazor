@@ -1,0 +1,127 @@
+@* có 1 ds sanpham -> dung vòng lặp để render ra các SanPhamItem *@
+@page "/BaiTapRender"
+
+@* 
+Component param : 
+    - Truyền dữ liệu từ component cha xuống component con thông qua tham số (parameter)
+    - Có 2 loại param chính:
+        + Tham số kiểu dữ liệu đơn giản (string, int, bool, decimal, datetime....)
+        + Tham số kiểu RenderFragment (dùng để truyền đoạn mã html hoặc 1 component khác)
+    - Callback function: truyền function từ component cha -> con và sử dụng khi có sự kiện sảy ra
+        - Comp con sẽ khai báo qua [parameter] với KDL là  EventCallback<kiểu dữ liệu>
+        - gọi hàm thông qua : await OnTenHam.InvokeAsync(giá trị truyền vào) để thông báo lên cha là có sự kiện sảy ra
+ *@
+
+
+<div class="container">
+    <h1>Bài tập render component param</h1>
+    @if (sanPhamChiTiet != null)
+    {
+        <div class="row">
+            <div class="col-4">
+                <img src="@sanPhamChiTiet.HinhAnh" alt="">
+            </div>
+            <div class="col-8">
+                <h3>@sanPhamChiTiet.Ten</h3>
+                <p>Giá: @sanPhamChiTiet.Gia</p>
+            </div>
+        </div>
+    }
+    <div class="row">
+        @*  chạy vòng lặp *@
+        @foreach (var sp in ds)
+        {
+            <div class="col-3">
+                <SanPhamItem 
+                Item="@sp" 
+                Title="Sản phẩm" 
+                OnXemChiTiet="XemChiTietSP"  
+                OnThemGioHang="ThemGioHang"/>
+            </div>
+        }
+
+    </div>
+    @* bs5-table-dèault *@
+    <div class="table-responsive">
+        <h2>Giỏ hàng (@dsGioHang.Count())</h2>
+        <table class="table table-primary">
+            <thead>
+                <tr>
+                    <th scope="col">Tên</th>
+                    <th scope="col">Giá</th>
+                    <th scope="col">Số lượng</th>
+                    <th scope="col">Tổng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var gh in dsGioHang)
+                {
+                    <tr class="">
+                        <td scope="row">@gh.Ten</td>
+                        <td>@gh.Gia</td>
+                        <td>@gh.SoLuong</td>
+                        <td>@(gh.Gia* gh.SoLuong)</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+</div>
+
+
+@code {
+    //ds sản phẩm (tên , giá , hình ảnh)
+    List<SanPham> ds = new List<SanPham>()
+{
+new SanPham(){Id=1, Ten="Iphone 14 Pro Max", Gia=30990000, HinhAnh="https://picsum.photos/id/1/200/300"},
+new SanPham(){Id=2, Ten="Samsung S23 Ultra", Gia=28990000, HinhAnh="https://picsum.photos/id/2/200/300"},
+new SanPham(){Id=3, Ten="Xiaomi Mi 13", Gia=19990000, HinhAnh="https://picsum.photos/id/3/200/300"},
+new SanPham(){Id=4, Ten="Oppo Find X5 Pro", Gia=23990000, HinhAnh="https://picsum.photos/id/4/200/300"},
+};
+
+    public SanPham sanPhamChiTiet = null;
+
+
+    // viết 1 hàm để thay đổi giá trị của sanPhamChiTiet
+    public void XemChiTietSP(SanPham sp)
+    {
+        sanPhamChiTiet = sp;
+    }
+
+    // DS giỏ hàng rỗng
+    public List<GioHang> dsGioHang = new List<GioHang>();
+        // khởi tạo 2 sp trong giỏ hàng
+        @* {
+        new GioHang(){Id=1, Ten="Iphone 14 Pro Max", SoLuong=1, Gia=30990000},
+        new GioHang(){Id=2, Ten="Samsung S23 Ultra", SoLuong=2, Gia=28990000},
+        }; *@
+
+    // thêm sp vào giỏ hàng
+    public void ThemGioHang(SanPham sp){
+        // kiểm tra sp đã có trong giỏ hàng chưa
+        var check = dsGioHang.FirstOrDefault(g => g.Id == sp.Id);
+        // Find  
+        // Where -> ds các sp khớp dk , -> sp đầu tiên
+        // nếu có thì tăng số lượng
+        if(check != null){
+            check.SoLuong +=1; 
+            // 
+        }
+        else{
+            dsGioHang.Add(new GioHang(){
+                Id=sp.Id,
+                Ten=sp.Ten,
+                Gia=sp.Gia,
+                SoLuong=1
+            });
+           
+        }
+        // chưa có thì Add vào dsGioHang
+    }
+
+
+}

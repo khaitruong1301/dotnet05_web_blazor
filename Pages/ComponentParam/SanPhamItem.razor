@@ -1,0 +1,47 @@
+<div class="card">
+    <img class="card-img-top" src="@Item.HinhAnh" alt="Card image cap" />
+    <div class="card-body">
+        <h4 class="card-title">@Item.Ten</h4>
+        <p class="card-text">@Item.Gia</p>
+        <p>@Title</p>
+    </div>
+    <div class="card-footer">
+        @* <button class="btn btn-primary" @onclick="()=>OnXemChiTiet.InvokeAsync(Item)">Xem chi tiết</button> *@
+        <button class="btn btn-primary" @onclick="XemChiTiet">Xem chi tiết</button>
+
+        @* <button class="btn btn-secondary" @onclick="()=>OnThemGioHang.InvokeAsync(Item)">Thêm giỏ hàng</button> *@
+        <button class="btn btn-secondary" @onclick="ThemGioHang">Thêm giỏ hàng</button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public SanPham Item { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public EventCallback<SanPham> OnXemChiTiet { get; set; }
+    
+    
+
+    public async Task XemChiTiet()
+    {
+        await OnXemChiTiet.InvokeAsync(Item);
+    }
+
+
+    // hứng function từ cha truyền xuống
+    [Parameter]
+    public EventCallback<SanPham> OnThemGioHang { get; set; }
+
+
+    public async Task ThemGioHang()
+    {
+        await OnThemGioHang.InvokeAsync(Item);
+    }
+
+
+}

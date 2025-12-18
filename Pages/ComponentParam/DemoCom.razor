@@ -1,0 +1,12 @@
+<div class="container">
+    <h2>Đây là component DemoCom</h2>
+
+    @ChildContent
+
+</div>
+
+@code{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}
