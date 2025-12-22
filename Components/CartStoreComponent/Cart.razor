@@ -1,0 +1,67 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ItemCartDTO item in gioHangState)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>
+                    <img src="@item.Image" alt="..." width="50" height="50" />
+                </td>
+                <td>@item.Price</td>
+                <td>
+                    <button @onclick="(e)=>handleChangeQuantity(item.Id,1)" class="btn btn-primary mx-2">+</button>
+                    <input class="w-auto d-inline form-control"  type="number"  @bind="@item.Quantity" />
+                    <button @onclick="(e)=>handleChangeQuantity(item.Id,-1)"  class="btn btn-primary mx-2">-</button>
+                </td>
+                @{
+                    int tongTien = item.Price * item.Quantity;
+                }
+                <td>@tongTien.ToString("N0")</td>
+                <td>
+                    <button class="btn btn-danger" @onclick="(e) => handleDelete(item.Id)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    [Parameter]
+    public List<ItemCartDTO> gioHangState { get; set; }
+
+    [Parameter]
+    public EventCallback<int> clickXoaGioHang{get;set;}
+   
+    [Parameter]
+    public EventCallback<ItemQuantity> clickTangGiamSoLuong{get;set;}
+
+    async Task handleDelete(int Id) {
+        clickXoaGioHang.InvokeAsync(Id);
+    }
+
+    async Task handleChangeQuantity(int Id,int Quantity){
+        ItemQuantity itemQuantity = new ItemQuantity(){
+            Id=Id,Quantity=Quantity
+        };
+        //Gọi callback function component cha (CartStore)
+        clickTangGiamSoLuong.InvokeAsync(itemQuantity);
+    }
+
+
+    @* async Task handleChange(ChangeEventArgs e) {
+        Console.WriteLine(@$"{e.Value.ToString()}");
+    } *@
+}

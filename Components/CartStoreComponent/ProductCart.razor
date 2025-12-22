@@ -1,0 +1,25 @@
+
+@* Cấu trúc component sẽ không chứa width *@
+<div class="card" >
+    <img class="w-100" src="@prodInput.Image" alt="..." style="height: 200px;" />
+    <div class="card-body">
+        <div class="card-title">@prodInput.Name</div>
+        <div class="card-text">@prodInput.Price</div>
+        <button class="btn btn-dark" @onclick="handleAddToCart">Thêm giỏ hàng 
+            <i class="fa fa-cart-plus"></i>
+        </button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public Product prodInput{get;set;}
+    [Parameter]
+    public EventCallback<Product> clickThemGioHang{get;set;}
+
+    public async Task handleAddToCart (){
+        //Trong sự kiện click của component con sẽ gọi hàm setState (thay đổi state của component cha)
+        await clickThemGioHang.InvokeAsync(prodInput);
+    }
+}

@@ -1,0 +1,98 @@
+@page "/cart"
+@using web_blazor_server.Components.CartStoreComponent
+
+<div class="container">
+    <h3>Bài tập giỏ hàng </h3>
+    <div class="row">
+        @foreach (Product prod in lstProduct)
+        {
+            <div class="col-md-4 my-2">
+                <ProductCart clickThemGioHang="@themGioHang" prodInput="@prod" />
+            
+            </div>
+        }
+    </div>
+    <hr />
+    <h3>Giỏ hàng</h3>
+    <Cart gioHangState="@gioHang" clickXoaGioHang="@xoaGioHang" clickTangGiamSoLuong="@tangGiamSoLuong"/>
+</div>
+
+@code {
+    //data đề cho - sau này lấy từ api
+    List<Product> lstProduct = new List<Product>()
+{
+new Product
+{
+Id = 1,
+Name = "Laptop Dell",
+Image = "https://dummyimage.com/300x300/000/fff&text=Laptop+Dell",
+Price = 200
+},
+new Product
+{
+Id = 2,
+Name = "iPhone 15",
+Image = "https://dummyimage.com/300x300/000/fff&text=iPhone+15",
+Price = 250
+},
+new Product
+{
+Id = 3,
+Name = "Tai nghe Sony",
+Image = "https://dummyimage.com/300x300/000/fff&text=Tai+nghe+Sony",
+Price = 350
+}
+};
+
+    //Dữ liệu giỏ hàng (dữ liệu của phần html giỏ hàng)
+    List<ItemCartDTO> gioHang = new List<ItemCartDTO>() {
+        new ItemCartDTO() {
+            Id = 1,Name =  "Laptop Dell", Image="https://dummyimage.com/300x300/000/fff&text=Laptop+Dell", Price=200, Quantity = 20
+        },
+    };
+
+    public async Task themGioHang (Product prodClick) {
+        Console.WriteLine(JsonSerializer.Serialize(prodClick));
+        //Từ object click -> tạo ra object itemcartdto -> đưa vô list
+        ItemCartDTO newItemCart = new ItemCartDTO();
+        newItemCart.Id = prodClick.Id;
+        newItemCart.Name = prodClick.Name;
+        newItemCart.Price = prodClick.Price;
+        newItemCart.Image = prodClick.Image;
+        newItemCart.Quantity = 1;
+        //Thêm vào giỏ hàng
+        //Kiểm tra sp đã có trong giỏ hàng chưa, nếu chưa có thì thêm vào nếu có rồi thì chỉ tăng số lượng
+        ItemCartDTO itemCartCheck = gioHang.Find(spGH => spGH.Id == prodClick.Id);
+        if(itemCartCheck != null) //có trong giỏ hàng rồi
+        {
+            itemCartCheck.Quantity += 1;
+        }else {
+            gioHang.Add(newItemCart);
+        }
+
+    }
+
+    //Viết hàm xoá giỏ hàng tại nơi chưa state () -> truyền hàm xuống nơi chưa nút xử lý = parameter event callback
+    public async Task xoaGioHang(int idClick) {
+        Console.WriteLine(@$"id xoá: {idClick}");
+        //Xử lý xoá
+        //Tìm sản phẩm trong giỏ hàng dựa vào id
+        ItemCartDTO spGH = gioHang.Find(sp => sp.Id == idClick);
+
+        if(spGH !=null){
+            gioHang.Remove(spGH);
+        }
+    }
+
+
+
+    public async Task tangGiamSoLuong(ItemQuantity itQuan){
+        ItemCartDTO item = gioHang.Find(sp => sp.Id ==itQuan.Id);
+        if(item != null) {
+            item.Quantity += itQuan.Quantity;
+        }
+    }
+
+    
+}
+
