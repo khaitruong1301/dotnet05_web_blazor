@@ -1,0 +1,44 @@
+@page "/oninit-get-store"
+@inject HttpClient Http;
+<div class="container">
+    <h3>Get-all-store(life cycle - oninit) </h3>
+
+    <div class="row">
+        @foreach (StoreDTO item in lstStore)
+        {
+            <div class="col-md-3 my-2">
+                <div class="card">
+                    <img src="https://dummyimage.com/600x400/eeeeee/000000&text=@item.name" alt="..." />
+                    <div class="card-body">
+                        <div class="card-title">@item.name</div>
+                        <button class="btn btn-dark">View detail</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button @onclick="getApiData">get api</button>
+</div>
+
+@code {
+
+    public List<StoreDTO> lstStore = new List<StoreDTO>();
+
+    public async Task getApiData () {
+            // Gọi API ở đây nếu cần
+        ResponseData? data = await Http.GetFromJsonAsync<ResponseData>("https://apistore.cybersoft.edu.vn/api/Store/getAll");
+        @* Console.WriteLine(@$"data api trả về: {JsonSerializer.Serialize(data)}"); *@
+        lstStore = data.content;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Hàm tự kích hoạt khi giao diện khởi tạo xong html
+        getApiData();
+    }
+
+
+
+
+}

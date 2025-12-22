@@ -14,10 +14,21 @@
     </div>
     <hr />
     <h3>Giỏ hàng</h3>
-    <Cart gioHangState="@gioHang" clickXoaGioHang="@xoaGioHang" clickTangGiamSoLuong="@tangGiamSoLuong"/>
+    <Cart gioHangState="@gioHang" clickXoaGioHang="@xoaGioHang" clickTangGiamSoLuong="@tangGiamSoLuong" @ref="tagCart"/>
+  
+
+    <button class="btn btn-danger" @onclick="handleDelteCart">Del item</button>
 </div>
 
 @code {
+
+    public Cart tagCart;
+
+    public async Task handleDelteCart() {
+        //Ref ứng dụng để tạo nút xử lý trên component cha gọi phương thức component con 
+        tagCart.clearCart();
+    }
+
     //data đề cho - sau này lấy từ api
     List<Product> lstProduct = new List<Product>()
 {

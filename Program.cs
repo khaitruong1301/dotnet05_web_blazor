@@ -3,6 +3,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages(); // DI thư viện razor web
 builder.Services.AddServerSideBlazor(); //DI thư viên server side 
 
+//DI service http : dùng để gọi từ server blazor đến server khác để lấy dữ liệu
+builder.Services.AddHttpClient();
+
+
+
 var app = builder.Build();
 //use: Sử dụng thư viện
 app.UseHttpsRedirection(); //https 

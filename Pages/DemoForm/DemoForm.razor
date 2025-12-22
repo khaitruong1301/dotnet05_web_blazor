@@ -1,0 +1,104 @@
+@page "/form"
+@layout HomePageMaster
+
+
+
+<div class="container">
+    <h3>Register</h3>
+    <EditForm Model="_model" OnValidSubmit="handleSubmit" class="mx-auto w-75">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="alert alert-danger" />
+
+        <div class="form-group">
+            <label class="form-label" for="userName">UserName</label>
+            <input class="form-control" name="userName" id="userName" @bind="_model.userName" />
+            <ValidationMessage class="alert alert-danger" For="@(() => _model.userName)" />
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="passWord">passWord</label>
+            <input class="form-control" name="passWord" id="passWord" type="password" @bind="_model.password" />
+            <ValidationMessage class="alert alert-danger" For="@(() => _model.password)" />
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="passwordConfirm">passwordConfirm</label>
+            <input class="form-control" name="passwordConfirm" id="passwordConfirm" type="password" @bind="_model.passwordConfirm" />
+            <ValidationMessage class="alert alert-danger" For="@(() => _model.passwordConfirm)" />
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" name="email" id="email" @bind="_model.email" />
+            <ValidationMessage class="alert alert-danger" For="@(() => _model.email)" />
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="fullName">fullName</label>
+            <input class="form-control" name="fullName" id="fullName" @bind="_model.fullName" />
+            <ValidationMessage class="alert alert-danger" For="@(() => _model.fullName)" />
+        </div>
+        @* <div class="form-group my-3">
+            <label class="form-label" for="gender">Gender:</label>
+            <div class="form-check d-inline-block">
+                <input type="radio" class="form-check-input" name="gender" id="male" @onclick='(e) => handleCheckGender("male")' />
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check d-inline-block">
+                <input type="radio" class="form-check-input" name="gender" id="female" @onclick='(e) => handleCheckGender("female")' />
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+        </div> *@
+
+
+         <InputRadioGroup @bind-Value="_model.gender" class="form-group my-3">
+            <label class="form-label" for="gender">Gender:</label>
+            <div class="form-check d-inline-block">
+                @{
+                    string male = "male";
+                    @* string female = "female"; *@
+                }
+                <InputRadio class="form-check-input" id="male" Value="male" />
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check d-inline-block">
+                <InputRadio class="form-check-input" id="female" Value="@("female")" />
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+        </InputRadioGroup>
+        @{
+            //code C#
+        }
+
+        <div class="form-group">
+            <label for="country">Country</label>
+            <select class="form-select" name="country" @bind="_model.country">
+                <option value="VN">Việt Nam</option>
+                <option value="En">Anh</option>
+                <option value="US">Mỹ</option>
+            </select>
+        </div>
+
+
+
+
+        <div class="form-group mt-2">
+            <button type="submit" class="btn btn-success">Register</button>
+        </div>
+
+
+
+
+    </EditForm>
+</div>
+
+@code {
+    public RegisterDTO _model = new RegisterDTO();
+
+    public async Task handleSubmit()
+    {
+        Console.WriteLine("submit");
+        Console.WriteLine(JsonSerializer.Serialize(_model));
+    }
+
+    public async Task handleCheckGender(string gender)
+    {
+        _model.gender = gender;
+    }
+}

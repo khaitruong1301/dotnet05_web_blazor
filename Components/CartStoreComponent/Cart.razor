@@ -64,4 +64,13 @@
     @* async Task handleChange(ChangeEventArgs e) {
         Console.WriteLine(@$"{e.Value.ToString()}");
     } *@
+
+
+    public void  clearCart(){
+        
+        gioHangState.Clear();
+
+        StateHasChanged();
+
+    }
 }

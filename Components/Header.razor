@@ -17,6 +17,11 @@
                 <NavLink class="nav-link" href="/login" ActiveClass="bg-white text-dark" Match="NavLinkMatch.All">Login
                 </NavLink>
             </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/form" ActiveClass="bg-white text-dark" Match="NavLinkMatch.All">
+                Form - validation
+                </NavLink>
+            </li>
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
@@ -26,15 +31,28 @@
                     <a class="dropdown-item" href="/two-way">two way</a>
                 </div>
             </li>
-        @* COMPONENT PARAM *@
+            @* COMPONENT PARAM *@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">Component param</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownId">
                     <a class="dropdown-item" href="/BaiTapRender">BaiTap render</a>
                     <a class="dropdown-item" href="/demo-fragment">Demo Fragment</a>
+                    <a class="dropdown-item" href="/cart">Giỏ hàng parameter </a>
+
                 </div>
             </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">LifeCycle</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    <a class="dropdown-item" href="/oninit-get-store">oninit-get-store</a>
+                  
+
+                </div>
+            </li>
+
         </ul>
         <form class="d-flex my-2 my-lg-0">
             <input class="form-control me-sm-2" type="text" placeholder="Search" />
