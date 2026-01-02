@@ -1,0 +1,33 @@
+
+@inject GioHangService gioHangService
+
+@implements IDisposable
+<div class="card">
+    <img src="@sp.HinhAnh" class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@sp.TenSanPham</h5>
+        <p class="card-text">Giá: @sp.DonGia</p>
+        <button class="btn btn-dark" @onclick="() => gioHangService.themGioHang(sp)">
+            Thêm giỏ hàng <i class="fa fa-cart-plus"></i>
+        </button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public SanPhamItemDTO sp { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+     
+        // Nếu có dùng state service:
+        gioHangService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        // Cleanup nếu cần
+        gioHangService.OnChange -= StateHasChanged;
+    }
+}

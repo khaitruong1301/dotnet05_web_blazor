@@ -1,0 +1,33 @@
+@page "/demo-number-change"
+
+@inject HttpClient Http
+@inject NumberService numService;
+
+@implements IDisposable
+<div class="container">
+    Number change demo - state management
+    <h1>Number: @numService.Number</h1>
+    <button class="btn btn-success me-2" @onclick="handleIncrement">Increment</button>
+    <button class="btn btn-danger" @onclick="handleDecrement">Decrement</button>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        //gắn sự kiện cập nhật state với hàm StateHasChanged
+        numService.OnChange += StateHasChanged;
+    }
+    public async Task handleIncrement()
+    {
+        numService.Increment();
+    }
+    public async Task handleDecrement()
+    {
+        numService.Decrement();
+    }
+    public void Dispose()
+    {
+        // Cleanup nếu cần
+        numService.OnChange -= StateHasChanged;
+    }
+}

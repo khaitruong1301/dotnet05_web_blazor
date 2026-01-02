@@ -6,6 +6,20 @@ builder.Services.AddServerSideBlazor(); //DI thư viên server side
 //DI service http : dùng để gọi từ server blazor đến server khác để lấy dữ liệu
 builder.Services.AddHttpClient();
 
+//DI service number
+builder.Services.AddScoped<NumberService>();
+//Addtransient: mỗi lần gọi đến service thì tạo mới
+//Addscoped: trong 1 phiên làm việc (1 lần load trang) thì dùng chung 1 service, nếu load lại trang thì tạo mới
+//Addsingleton: suốt vòng đời ứng dụng chỉ tạo 1 service duy nhất (logger, config)
+
+// Transient: dùng xong bỏ
+// Scoped: theo request (1 lần load trang) thì dùng chung 1 service, nếu load lại trang thì tạo mới
+// Singleton: dùng chung toàn hệ thống (Dùng cho các nghiệp vụ như logging, caching, configuration)
+
+//DI service giỏ hàng
+builder.Services.AddScoped<GioHangService>();
+
+
 
 
 var app = builder.Build();

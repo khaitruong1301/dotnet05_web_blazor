@@ -1,0 +1,60 @@
+@*blazor - component*@
+@page "/demo-js"
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+
+@implements IDisposable
+<div class="container">
+    <h3 id="title">Demo IJSRuntime - Call JS from Blazor</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <button class="btn btn-primary" @onclick="showMessage">Show message</button>
+        </div>
+    </div>
+    <button class="btn btn-success" @onclick="fetchDataApiStore"> Get data</button>
+    <h3>Product list</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="productTable">
+          
+        </tbody>
+    </table>
+
+    <button class="btn btn-success" @onclick="tinhTong">tinhTong - @tong</button>
+
+</div>
+
+@code {
+    public int tong {get;set;} = 0;
+    public async Task tinhTong()
+    {
+       tong = await JS.InvokeAsync<int>("tinhTong",5,10);
+       Console.WriteLine("Tong la: " + tong);
+    }
+    public async Task fetchDataApiStore()
+    {
+        //SSR: server side rendering
+        await JS.InvokeVoidAsync("fetchDataApiStore");
+    }
+    public async Task showMessage()
+    {
+       await JS.InvokeVoidAsync("showMessage","Hello cybersoft dotnet 05");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+   
+    }
+
+    public void Dispose()
+    {
+        // Cleanup nếu cần
+        // StateService.OnChange -= StateHasChanged;
+    }
+}

@@ -1,0 +1,61 @@
+
+@inject GioHangService gioHangService
+
+@implements IDisposable
+
+<h3 class="alert alert-success">
+    <i class="fa fa-shopping-cart"></i>
+    Giỏ hàng</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Hình ảnh</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(SanPhamGioHang spGH in gioHangService.gioHangState){
+            <tr>
+                <td>@spGH.MaSanPham</td>
+                <td>@spGH.TenSanPham</td>
+                <td>
+                    <img src="@spGH.HinhAnh" alt="@spGH.TenSanPham" width="50" />
+                </td>
+                <td>@spGH.DonGia</td>
+                <td>
+                    <button class="btn btn-dark" @onclick="() => gioHangService.changeNumber(spGH.MaSanPham, -1)">-</button>
+                    @spGH.SoLuong
+                    <button class="btn btn-dark" @onclick="() => gioHangService.changeNumber(spGH.MaSanPham, 1)">+</button>
+                </td>
+                <td>@(spGH.DonGia * spGH.SoLuong)</td>
+                <td>
+                    <button class="btn btn-danger" @onclick="() => gioHangService.xoaGioHang(spGH.MaSanPham)">
+                        <i class="fa fa-trash"></i> Xóa
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+     
+        // Nếu có dùng state service:
+        gioHangService.OnChange += StateHasChanged;
+    }
+
+
+    public void Dispose()
+    {
+        // Cleanup nếu cần
+        gioHangService.OnChange -= StateHasChanged;
+    }
+}
