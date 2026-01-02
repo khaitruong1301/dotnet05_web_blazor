@@ -1,0 +1,121 @@
+@page "/detail/{idStore}"
+@*Chuyển hướng trang trong 1 hàm xử lý*@
+@inject NavigationManager _nav
+@inject HttpClient Http
+<div class="container">
+    <h3>Store id: @storeDetail.id </h3>
+    <div class="row">
+        <div class="col-4">
+            <img class="w-100" src=@(@$"https://dummyimage.com/600x400/eeeeee/000000&text={storeDetail.name}")
+                alt="..." />
+        </div>
+        <div class="col-6">
+            <h3>Store name: @storeDetail.name</h3>
+            <p>@storeDetail.description</p>
+        </div>
+    </div>
+    <h3 class="my-5">Sản phẩm liên quan</h3>
+    <div class="row">
+        @for (int i = 1; i <= 4; i++)
+        {
+            <div class="col-3 mt-2">
+                <div class="card">
+                    <img class="w-100" src=@(@$"https://dummyimage.com/600x400/eeeeee/000000&text=abc{i}") alt="..." />
+                </div>
+                <div class="card-body">
+                    <NavLink href="@($@"/detail/{i}")" class="btn btn-dark">Chi tiết</NavLink>
+                </div>
+
+            </div>
+        }
+    </div>
+
+
+
+</div>
+
+
+
+
+
+@implements IDisposable
+
+@code {
+    [Parameter]
+    public string idStore { get; set; }
+    public StoreDetailDTO storeDetail { get; set; } = new StoreDetailDTO();
+
+    public async Task GetDetailStore()
+    {
+        //Gọi api đến server
+        HttpResponseMessage response = await
+        Http.GetAsync(@$"https://apistore.cybersoft.edu.vn/api/Store/getbyid?id={idStore}");
+        //Kiểm tra nếu server phản hồi thành công và có kết quả
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(@$"{idStore}");
+            // Gọi API ở đây nếu cần
+            ResponseData<StoreDetailDTO>? data = await
+            response.Content.ReadFromJsonAsync<ResponseData<StoreDetailDTO>>();
+            Console.WriteLine($@"{JsonSerializer.Serialize(data.content)}");
+            //Sau khi gọi api gán vào state storeDetail
+            storeDetail = data.content;
+
+
+
+        }
+        else
+        { //Ngược lại không thành công (do link không tồn tại 404 NotFound hoặc do tham số không hợp lệ 400 Bad request)
+            _nav.NavigateTo("/oninit-get-store");
+            return;
+        }
+
+        StateHasChanged();
+
+        // Nếu có dùng state service:
+        // StateService.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        @* await GetDetailStore(); *@
+        //Thứ 3 : Chạy 1 lần khi component load giao diện lần đầu tiên
+    }
+
+    //chạy trước onSet
+    public override async Task SetParametersAsync(ParameterView param) //param: Chứa tất các các tham số [Parameter]
+    {
+
+        //Lấy giá trị param (chứa giá trị các tham số param mới)
+        if (param.TryGetValue("idStore", out string id))
+        {
+            idStore = id; //Gán cho idStore hiện tại
+        }
+        await base.SetParametersAsync(param); //lấy id mới
+        await GetDetailStore();//Gọi api
+        //Thứ 1
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //Hàm này chạy sau khi đã thay đổi tham số param mới nạp vào [Parameter]
+        await GetDetailStore();//Gọi api
+
+        //Thứ 2
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        @* if (firstRender)
+        {
+            // Chạy 1 lần sau render đầu tiên
+            await Task.Delay(100);
+        } *@
+    }
+
+    public void Dispose()
+    {
+        // Cleanup nếu cần
+        // StateService.OnChange -= StateHasChanged;
+    }
+}

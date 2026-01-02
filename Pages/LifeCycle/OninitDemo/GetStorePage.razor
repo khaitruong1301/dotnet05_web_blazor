@@ -3,7 +3,7 @@
 <div class="container">
     <h3>Get-all-store(life cycle - oninit) </h3>
 
-    <div class="row">
+    <div class="row" >
         @foreach (StoreDTO item in lstStore)
         {
             <div class="col-md-3 my-2">
@@ -11,7 +11,7 @@
                     <img src="https://dummyimage.com/600x400/eeeeee/000000&text=@item.name" alt="..." />
                     <div class="card-body">
                         <div class="card-title">@item.name</div>
-                        <button class="btn btn-dark">View detail</button>
+                        <NavLink href="@($"/detail/{item.id}")" class="btn btn-dark">View detail</NavLink>
                     </div>
                 </div>
             </div>
@@ -27,15 +27,15 @@
 
     public async Task getApiData () {
             // Gọi API ở đây nếu cần
-        ResponseData? data = await Http.GetFromJsonAsync<ResponseData>("https://apistore.cybersoft.edu.vn/api/Store/getAll");
+        ResponseData<List<StoreDTO>>? data = await Http.GetFromJsonAsync<ResponseData<List<StoreDTO>>>("https://apistore.cybersoft.edu.vn/api/Store/getAll");
         @* Console.WriteLine(@$"data api trả về: {JsonSerializer.Serialize(data)}"); *@
-        lstStore = data.content;
+        lstStore = data.content ;
     }
 
     protected override async Task OnInitializedAsync()
     {
         //Hàm tự kích hoạt khi giao diện khởi tạo xong html
-        getApiData();
+        await getApiData();
     }
 
 

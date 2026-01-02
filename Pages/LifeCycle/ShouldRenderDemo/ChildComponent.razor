@@ -1,0 +1,95 @@
+@inject HttpClient Http
+@implements IDisposable
+
+<div class="card border-primary">
+    <div class="card-header bg-light">
+        <h5 class="text-primary mb-0">Dynamic Notification List</h5>
+    </div>
+    <div class="card-body">
+        <div class="list-group list-group-flush">
+            @foreach (var notification in notifications)
+            {
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>@notification</span>
+                    <button class="btn btn-danger btn-sm">Dismiss</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<h3>
+    Countdown : @countDown
+</h3>
+
+@code {
+    Timer timer;
+    public int countDown = 1000;
+
+    [Parameter]
+    public List<string> notifications { get; set; } = new List<string>();
+    //Tạo biến để lưu lại lịch sử của notifications
+    private List<string> previousNotifications = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Cài đặt service countdown chạy ngầm
+        timer = new Timer(async (state) =>
+        {
+            if (countDown > 0)
+            {
+                Console.WriteLine($@"{countDown}");
+            }
+        }, null, 0, 1000); //Chạy mỗi giây  
+
+
+
+
+        // Gọi API ở đây nếu cần
+        // var data = await Http.GetFromJsonAsync<T>("/api/endpoint");
+
+        // Nếu có dùng state service:
+        // StateService.OnChange += StateHasChanged;
+    }
+
+    public override async Task SetParametersAsync(ParameterView param)
+    {
+        await base.SetParametersAsync(param);
+    }
+    //purecomponent -> react code sẵn (class component)
+    //useMemo,useCallback -> function component
+    //react 19 -> có phần config tự động so sánh props cũ và mới
+    protected override bool ShouldRender()
+    {
+        base.ShouldRender();
+        //return về false là component không render lại
+        //return về true là component render lại
+        if(!Enumerable.SequenceEqual(notifications, previousNotifications))
+        {
+            //Cập nhật lại previousNotifications
+            previousNotifications = new List<string>(notifications);
+            return true;
+        }else {
+            return false;
+        }
+        //Xử l1y khi nào mà notify thay đổi thì mới render
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Console.WriteLine("render child ");
+        if (firstRender)
+        {
+            Console.WriteLine("first render");
+        }
+    }
+
+    public void Dispose()
+    {
+        //Background service (service chạy ngầm)
+        //Clear timer
+        timer?.Dispose();
+        // Cleanup nếu cần
+        // StateService.OnChange -= StateHasChanged;
+    }
+}

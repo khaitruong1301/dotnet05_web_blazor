@@ -1,0 +1,85 @@
+@page "/parent"
+
+@inject HttpClient Http
+
+<div class="container">
+    <h3>Demo ShouldRender - Child Component</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Static Card</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Fixed Information</p>
+                    <p class="text-muted">This is a static card that does not change</p>
+                    <button class="btn btn-outline-primary btn-sm">Learn More</button>
+                    <hr>
+                    <small class="text-muted">cybersoft notify (1)</small>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-warning btn-sm" @onclick="changeNumber">Render parent (@number)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <ChildComponent notifications="@notifications" />
+            <div class="card-footer text-end">
+                <button class="btn btn-primary" @onclick="addNotify">Add Notification</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@implements IDisposable
+
+@code {
+    public int number {get;set;} = 1;
+    public List<string> notifications = new List<string>()
+    {
+        "Welcome to the site!",
+        "New updates available!",
+        "cybersoft notify"
+    };
+
+    public async Task addNotify()
+    {
+        notifications.Add($"Notification {notifications.Count + 1}");
+    }   
+    public async Task changeNumber()
+    {
+        number += 1;
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Gọi API ở đây nếu cần
+        // var data = await Http.GetFromJsonAsync<T>("/api/endpoint");
+
+        // Nếu có dùng state service:
+        // StateService.OnChange += StateHasChanged;
+    }
+
+    public override async Task SetParametersAsync(ParameterView param)
+    {
+        await base.SetParametersAsync(param);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Chạy 1 lần sau render đầu tiên
+            await Task.Delay(100);
+        }
+    }
+
+    public void Dispose()
+    {
+        // Cleanup nếu cần
+        // StateService.OnChange -= StateHasChanged;
+    }
+}
