@@ -23,12 +23,12 @@
             </li>
             <li class="nav-item">
                 <NavLink class="nav-link" href="/demo-js" ActiveClass="bg-white text-dark" Match="NavLinkMatch.All">
-                 Demo - js
+                    Demo - js
                 </NavLink>
             </li>
-                    <li class="nav-item">
+            <li class="nav-item">
                 <NavLink class="nav-link" href="/form" ActiveClass="bg-white text-dark" Match="NavLinkMatch.All">
-                Form - validation
+                    Form - validation
                 </NavLink>
             </li>
 
@@ -57,18 +57,25 @@
                     aria-haspopup="true" aria-expanded="false">LifeCycle</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownId">
                     <a class="dropdown-item" href="/oninit-get-store">oninit-get-store</a>
-                     <a class="dropdown-item" href="/parent">should-render</a>
+                    <a class="dropdown-item" href="/parent">should-render</a>
 
                 </div>
             </li>
-               <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">Statemanagement</a>
                 <div class="dropdown-menu" aria-labelledby="dropdownId">
                     <a class="dropdown-item" href="/demo-number-change">Demo number change</a>
                     <a class="dropdown-item" href="/gio-hang">Bài tập giỏ hàng</a>
-              
-    
+                    <a class="dropdown-item" href="/burger">Bài tập burger</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Http Client</a>
+                <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    <a class="dropdown-item" href="/productmanagement">Demo Product CRUD - WebApi</a>
+                  
                 </div>
             </li>
 
@@ -92,9 +99,9 @@
 
 @code {
 
-      protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-     
+
         // Nếu có dùng state service:
         gioHangService.OnChange += StateHasChanged;
     }

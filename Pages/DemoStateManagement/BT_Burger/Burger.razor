@@ -1,0 +1,27 @@
+
+@inject BurgerService _burgerService;
+@implements IDisposable
+<div class="burger">
+    <div class="breadTop"></div>
+    @* <div class="salad"></div>
+    <div class="cheese"></div>
+    <div class="beef"></div> *@
+    @foreach(ToppingDTO item in _burgerService._burgerDTO.ListTopping)
+    {
+        for(int i=1 ; i<= item.Quantity; i++){
+            <div class="@item.Id"></div>
+        }
+    }
+      
+    <div class="breadBottom"></div>
+</div>
+@code {
+    protected override void OnInitialized()
+    {
+        _burgerService.OnChange += StateHasChanged;
+    }
+    public void Dispose()
+    {
+        _burgerService.OnChange -= StateHasChanged;
+    }
+}

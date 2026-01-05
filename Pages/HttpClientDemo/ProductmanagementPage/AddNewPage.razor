@@ -1,0 +1,67 @@
+@page "/add-new-product"
+
+@inject IHttpClientFactory HttpClientFactory
+
+
+@* 
+public class ProductPostApiDTO
+{
+    public int Id { get; set; }
+    // [Required(ErrorMessage = "Name is required")]
+    public string Name { get; set; }
+    public double Price { get; set; }
+    public string Description { get; set; }
+    public string ShortDescription { get; set; }
+    public double Quantity { get; set; }
+    public string ImgLink { get; set; }
+} *@
+
+<div class="container">
+    <h3>Add New Product</h3>
+    <EditForm Model="@_newProduct" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="_newProduct.Name" />
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <InputNumber id="price" class="form-control" @bind-Value="_newProduct.Price" />
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image URL</label>
+            <InputText id="image" class="form-control" @bind-Value="_newProduct.Image" />
+        </div>
+        <button type="submit" class="btn btn-primary">Add Product</button>
+</EditForm>
+
+</div>
+
+
+@code {
+    private ProductDTO _newProduct = new ProductDTO();
+
+    [Inject]
+    private ProductManagementService _productService { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        //Gọi api
+        Console.WriteLine(JsonSerializer.Serialize(_newProduct));
+        HttpClient _httpClient = HttpClientFactory.CreateClient("apiStore");
+
+        var response = await _httpClient.PostAsJsonAsync("/api/product/addnew", _newProduct);
+        if (response.IsSuccessStatusCode)
+        {
+            var createdProduct = await response.Content.ReadFromJsonAsync<ProductDTO>();
+            Console.WriteLine("Product created successfully: " + JsonSerializer.Serialize(createdProduct));
+        }
+        else
+        {
+            Console.WriteLine("Error creating product: " + response.ReasonPhrase);
+        }
+
+   
+    }
+}

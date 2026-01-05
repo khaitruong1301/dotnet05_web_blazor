@@ -1,0 +1,53 @@
+
+@inject BurgerService _burgerService;
+
+@implements IDisposable;
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach(ToppingDTO item in _burgerService._burgerDTO.ListTopping){
+             <tr>
+            <td>@item.Id</td>
+            <td>
+                <button class="btn btn-dark mx-2" @onclick="@(() => _burgerService.ChangeTopping(item.Id,1))">+</button>
+                @item.Quantity
+                <button class="btn btn-dark mx-2" @onclick="@(() => _burgerService.ChangeTopping(item.Id,-1))">-</button>
+            </td>
+            <td>
+                @item.Price
+            </td>
+            <td>
+                @((item.Quantity * item.Price).ToString("N0"))
+            </td>
+        </tr>
+       }
+       
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" align="right">Total</td>
+            <td>@_burgerService._burgerDTO.ListTopping.Sum(item => item.Quantity*item.Price).ToString("N0")</td>
+        </tr>
+    </tfoot>
+
+</table>
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        _burgerService.OnChange += StateHasChanged;
+    }
+    public void Dispose()
+    {
+        _burgerService.OnChange -= StateHasChanged;
+    }
+}

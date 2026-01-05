@@ -6,6 +6,18 @@ builder.Services.AddServerSideBlazor(); //DI thư viên server side
 //DI service http : dùng để gọi từ server blazor đến server khác để lấy dữ liệu
 builder.Services.AddHttpClient();
 
+builder.Services.AddHttpClient("apiStore",client=>
+{
+    client.BaseAddress = new Uri("https://apistore.cybersoft.edu.vn");
+    client.Timeout = TimeSpan.FromSeconds(30); //30s 
+    //Thiết lập header chung cho tất cả các request gửi đi là application/json dành cho Post Put
+    client.DefaultRequestHeaders.Add("Accept","application/json");
+});
+
+
+
+
+
 //DI service number
 builder.Services.AddScoped<NumberService>();
 //Addtransient: mỗi lần gọi đến service thì tạo mới
@@ -18,6 +30,17 @@ builder.Services.AddScoped<NumberService>();
 
 //DI service giỏ hàng
 builder.Services.AddScoped<GioHangService>();
+
+//DI DTO
+builder.Services.AddScoped<BurgerDTO>();
+
+//DI Service
+builder.Services.AddScoped<BurgerService>();
+
+
+builder.Services.AddScoped<ProductManagementService>();
+builder.Services.AddScoped<ProductDTO>();
+builder.Services.AddScoped<List<ProductDTO>>();
 
 
 
