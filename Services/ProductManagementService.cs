@@ -16,7 +16,7 @@ public class ProductManagementService
         if(res!=null && res.content!=null)
         {
             //Lấy dữ từ api trả về gán vào state
-            _lstProduct = res.content.Skip(0).Take(5).ToList();
+            _lstProduct = res.content.ToList();
             //Gọi render lại giao diện
             setStateHasChanged();
         }

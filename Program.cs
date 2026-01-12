@@ -4,7 +4,7 @@ builder.Services.AddRazorPages(); // DI thư viện razor web
 builder.Services.AddServerSideBlazor(); //DI thư viên server side 
 
 //DI service http : dùng để gọi từ server blazor đến server khác để lấy dữ liệu
-builder.Services.AddHttpClient();
+// builder.Services.AddHttpClient();
 
 builder.Services.AddHttpClient("apiStore",client=>
 {
@@ -13,6 +13,8 @@ builder.Services.AddHttpClient("apiStore",client=>
     //Thiết lập header chung cho tất cả các request gửi đi là application/json dành cho Post Put
     client.DefaultRequestHeaders.Add("Accept","application/json");
 });
+
+
 
 
 
