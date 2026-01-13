@@ -1,0 +1,85 @@
+@page "/edit/{id}"
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavigationManager
+
+
+<div class="container">
+    <h3>Edit Product</h3>
+    <EditForm Model="@_editProduct" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="_editProduct.Name" />
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <InputNumber id="price" class="form-control" @bind-Value="_editProduct.Price" />
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">Image URL</label>
+            <InputText id="image" class="form-control" @bind-Value="_editProduct.Image" />
+        </div>
+        <button type="submit" class="btn btn-primary">Edit Product</button>
+        @if(status != "")
+        {
+            <div class="alert alert-info mt-3">
+                @status
+            </div>
+        }
+</EditForm>
+
+
+
+</div>
+
+@code {
+    [Parameter]
+    public string id { get; set; } = "";
+    public string status = "";
+    public ProductDTO _editProduct = new ProductDTO();
+    public HttpClient _httpClient = null!;
+
+    public async Task HandleValidSubmit()
+    {
+        //gọi api update product 
+        HttpResponseMessage response = await _httpClient.PutAsJsonAsync("/api/product/updateproduct", _editProduct);
+        if(response.IsSuccessStatusCode){
+            status = "Product updated successfully! Redirecting to product list...";
+            StateHasChanged(); //Cập nhật lại giao diện chủ động
+            await Task.Delay(5000);
+            NavigationManager.NavigateTo("/productmanagement");
+        }else {
+            status = "Error updating product.";
+            Console.WriteLine("Error updating product: " + response.ReasonPhrase);
+        }
+        
+       
+    }
+
+
+     protected override async Task OnParametersSetAsync()
+    {
+        //Dựa vào parameter id gọi api lấy thông tin productEdit
+        _httpClient = HttpClientFactory.CreateClient("apiStore");
+
+        HttpResponseMessage response = await
+        _httpClient.GetAsync(@$"https://apistore.cybersoft.edu.vn/api/Product/getid?id={id}");
+        if (response.IsSuccessStatusCode)
+        {
+            ResponseData<ProductDTO>? data = await
+            response.Content.ReadFromJsonAsync<ResponseData<ProductDTO>>();
+            //Gán data.content vào _editProduct để hiển thị lên form
+            _editProduct = data.content;
+        }else {
+            status = "Not found product with id " + id;
+            await Task.Delay(5000);
+            NavigationManager.NavigateTo("/productmanagement");
+        }
+
+        
+        
+    }
+
+
+}

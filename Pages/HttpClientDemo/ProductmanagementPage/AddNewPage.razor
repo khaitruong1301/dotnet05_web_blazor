@@ -2,6 +2,7 @@
 
 @inject IHttpClientFactory HttpClientFactory
 
+@inject NavigationManager NavigationManager
 
 @* 
 public class ProductPostApiDTO
@@ -34,12 +35,19 @@ public class ProductPostApiDTO
             <InputText id="image" class="form-control" @bind-Value="_newProduct.Image" />
         </div>
         <button type="submit" class="btn btn-primary">Add Product</button>
+        @if(status != "")
+        {
+            <div class="alert alert-info mt-3">
+                @status
+            </div>
+        }
 </EditForm>
 
 </div>
 
 
 @code {
+    public string status = "";
     private ProductDTO _newProduct = new ProductDTO();
 
     [Inject]
@@ -56,9 +64,14 @@ public class ProductPostApiDTO
         {
             var createdProduct = await response.Content.ReadFromJsonAsync<ProductDTO>();
             Console.WriteLine("Product created successfully: " + JsonSerializer.Serialize(createdProduct));
+            status = "Product created successfully! Redirecting to product list...";
+            await Task.Delay(5000);
+            //Quay về trang danh sách
+            NavigationManager.NavigateTo("/productmanagement");
         }
         else
         {
+            status = "Error creating product.";
             Console.WriteLine("Error creating product: " + response.ReasonPhrase);
         }
 

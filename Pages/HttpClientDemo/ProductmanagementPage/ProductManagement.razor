@@ -1,12 +1,23 @@
 @page "/productmanagement"
+@using Microsoft.JSInterop
 
 @inject ProductManagementService _productService;
+@inject IJSRuntime JSRuntime
 @implements IDisposable
+
+@inject NavigationManager _navigationManager
 
 
 <div class="container">
     <h3>Product Management Page</h3>
     <NavLink class="btn btn-success mb-2" href="/add-new-product">Add New Product</NavLink>
+    <EditForm Model="new ProductDTO()" OnValidSubmit="handleSearch" class="frm-search input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search product by name..." @bind="@keyword" />
+        <NavLink href=@($@"/productmanagement?keyword={keyword}") class="btn btn-primary" type="submit" >Search</NavLink>
+
+    </EditForm>
+
+
     <table class="table">
         <thead>
             <tr>
@@ -18,27 +29,49 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(ProductDTO prod in _productService._lstProduct){
+            @foreach (ProductDTO prod in _productService._lstProduct)
+            {
                 <tr>
                     <td>@prod.Id</td>
-                    <td>@prod.Name</td>
+                    <td>
+                        <NavLink href=@($"/edit/{prod.Id}")>
+                            @prod.Name
+                        </NavLink>
+                    </td>
                     <td>@prod.Price</td>
                     <td>
                         <img src="@prod.Image" width="100" height="100" />
                     </td>
                     <td>
-                        <button class="btn btn-danger">Delete</button>
-                        <button class="btn btn-primary">Edit</button>
+                        <button class="btn btn-danger" @onclick=@((e) => handleDelete(prod.Id))>Delete</button>
+                        <NavLink class="btn btn-primary" href=@($@"/edit/{prod.Id}")>Edit</NavLink>
                     </td>
                 </tr>
             }
-           
+
         </tbody>
     </table>
 </div>
 
 
-@code{
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? keyword{get;set;} ="";
+    public async Task handleSearch()
+    {
+        _navigationManager.NavigateTo($"/productmanagement?keyword={keyword}");
+    }
+    public async Task handleDelete(int id)
+    {
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete product with id {id}?");
+        if (confirm == true)
+        {
+            //Tạo service gọi hoặc gọi api trực tiếp
+            _productService.deleteProduct(id);
+        }
+    }
     protected override async Task OnInitializedAsync()
     {
         _productService.OnChange += StateHasChanged;
@@ -46,6 +79,15 @@
         //Gọi api lấy danh sách product
         await _productService.GetAllProduct();
     }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //Gọi api lấy danh sách product
+        await _productService.GetAllProductByKeyword(keyword);
+    }
+
+
+
 
     public void Dispose()
     {

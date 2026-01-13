@@ -43,6 +43,9 @@ builder.Services.AddScoped<ProductDTO>();
 builder.Services.AddScoped<List<ProductDTO>>();
 
 
+//DI signalR
+builder.Services.AddSignalR();
+
 
 
 var app = builder.Build();
@@ -51,6 +54,12 @@ app.UseHttpsRedirection(); //https
 
 
 app.MapBlazorHub(); //middleware của blazor để làm file chạy đầu tiên
+
+
+app.MapHub<RoomHub>("/roomHub"); //middleware của signalR để làm file chạy đầu tiên
+
+
+
 app.MapFallbackToPage("/_Host"); //File chọn chạy đầu tiên
 
 app.UseStaticFiles(); // middleware để sử dụng file tĩnh như css, js, img
