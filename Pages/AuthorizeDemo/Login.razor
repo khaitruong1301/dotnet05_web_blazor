@@ -1,0 +1,69 @@
+@page "/login-auth"
+@using Microsoft.Extensions.ObjectPool
+
+@inject HttpClient Http
+@inject JwtAuthService _jwtAuthService
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage
+@*
+    SetItem(key, value): Lưu vào local storage
+    GetItem(key): Lấy ra giá trị trong local storage theo key
+    RemoveItem(key): Xóa giá trị trong local storage theo key
+
+*@
+
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h3 class="text-center">Login</h3>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <InputSelect id="role" class="form-select" @bind-Value="loginModel.Role">
+                                <option value="">-- Select Role --</option>
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                            </InputSelect>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@code {
+    UserLoginDTO loginModel = new UserLoginDTO();
+    public async Task HandleLogin()
+    {
+        Console.WriteLine(@$"{JsonSerializer.Serialize(loginModel)}");
+
+        string accessToken = _jwtAuthService.GenerateToken(loginModel.Username,loginModel.Role);
+
+        Console.WriteLine($"Token: {accessToken}");
+        //Lưu trữ token vào máy người dùng (client)
+        await _localStorage.SetItemAsync("accessToken", accessToken);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
+  
+}

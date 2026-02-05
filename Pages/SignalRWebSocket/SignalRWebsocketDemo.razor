@@ -14,56 +14,21 @@
                 <div class="card-header bg-white border-3 border-primary">
                     <h5 class="mb-0">Chat Rooms</h5>
                     <div class="d-flex justify-content-between align-items-center mt-2">
-                        <button class="btn btn-primary btn-sm">+ Add Room</button>
+                        <button class="btn btn-primary btn-sm" @onclick="handleAddRoom">+ Add Room</button>
                         <span class="badge bg-secondary">Room 10</span>
                     </div>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 0</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 1</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 2</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 3</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 4</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 5</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 6</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 7</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 8</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 9</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <span>Room 10</span>
-                            <span class="badge bg-primary rounded-pill">0</span>
-                        </a>
+
+                        @foreach (string room in lstRoomDTO)
+                        {
+                            <a href="#"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <span>@room</span>
+                                <span class="badge bg-primary rounded-pill">@room</span>
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
@@ -111,26 +76,45 @@
 @code {
 
     HubConnection? hubConnection;
+
+    List<string> lstRoomDTO = new List<string>();
     //oninit
     protected override async Task OnInitializedAsync()
     {
         //kết nối signalR
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(_navigate.ToAbsoluteUri("/roomHub"))
-            .WithAutomaticReconnect()
-            .Build();
+        .WithUrl(_navigate.ToAbsoluteUri("/roomHub"))
+        .WithAutomaticReconnect()
+        .Build();
         //Khởi động kết nối
         await hubConnection.StartAsync();
         // Sau khi start connection thì lắng nghe action load_lst_room
-        hubConnection.On<List<string>>("load_lst_room",(lstRoom) =>{
-            Console.WriteLine($@"{JsonSerializer.Serialize(lstRoom)}");
+        hubConnection.On<List<string>>("load_lst_room", async(lstRoom) =>
+        {
+            lstRoomDTO = lstRoom;
+            await InvokeAsync(StateHasChanged);//Gọi render lại giao diện
         });
+
+        //Gọi nghiệp vụ loadAllRom từ RoomHubServer
+        if (hubConnection is not null)
+        {
+            await hubConnection.InvokeAsync("getAllRoom");
+        }
+    }
+
+    public async Task handleAddRoom()
+    {
+        if (hubConnection is not null)
+        {
+            //gọi hàm add_room trên hub
+            await hubConnection.InvokeAsync("add_room", @$"Room {lstRoomDTO.Count+1}");
+        }
     }
 
     //ondispose
     public void Dispose()
     {
-        //ngắt kết nối signalR  
+        //ngắt kết nối signalR
         _ = hubConnection?.DisposeAsync();
     }
 }
